@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="&amp;ensp;&amp;ensp;&amp;ensp;随着工作年限的增加，对工作中的代码结构和质量的追求也在增加。之前看书学习过的设计模式，当时也就是看看，看过或许有的忘记，或许不会使用。入职新公司以来，看团队高级工程师的代码，为了实现一个需求，可以使用合适的设计模式去规范代码，使代码的可读性和可扩展性都大大提升，我意识到是时候巩固一下基础，系统学习一下设计模式了。从这边文章开始，我将从创建型模式中的工厂模式开始复">
+<meta name="keywords" content="基础,设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基础加固-工厂模式">
+<meta property="og:url" content="http://redmapleren.com/2019/06/27/基础加固-工厂模式/index.html">
+<meta property="og:site_name" content="Redmaple1的博客">
+<meta property="og:description" content="&amp;ensp;&amp;ensp;&amp;ensp;随着工作年限的增加，对工作中的代码结构和质量的追求也在增加。之前看书学习过的设计模式，当时也就是看看，看过或许有的忘记，或许不会使用。入职新公司以来，看团队高级工程师的代码，为了实现一个需求，可以使用合适的设计模式去规范代码，使代码的可读性和可扩展性都大大提升，我意识到是时候巩固一下基础，系统学习一下设计模式了。从这边文章开始，我将从创建型模式中的工厂模式开始复">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/GameOriginUML.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/GameSimpleFactoryUML.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/GameFactoryMethodUML.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/AbstractFactoryUML.png">
+<meta property="og:updated_time" content="2019-07-02T06:31:50.671Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基础加固-工厂模式">
+<meta name="twitter:description" content="&amp;ensp;&amp;ensp;&amp;ensp;随着工作年限的增加，对工作中的代码结构和质量的追求也在增加。之前看书学习过的设计模式，当时也就是看看，看过或许有的忘记，或许不会使用。入职新公司以来，看团队高级工程师的代码，为了实现一个需求，可以使用合适的设计模式去规范代码，使代码的可读性和可扩展性都大大提升，我意识到是时候巩固一下基础，系统学习一下设计模式了。从这边文章开始，我将从创建型模式中的工厂模式开始复">
+<meta name="twitter:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/GameOriginUML.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Redmaple1的博客" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://redmapleren.com/2019/06/27/基础加固-工厂模式/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>基础加固-工厂模式 | Redmaple1的博客</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?30507f01f58feb53029ffb23d22f1f1f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Redmaple1的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">我的个人技术博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://redmapleren.com/2019/06/27/基础加固-工厂模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoya Ren">
+      <meta itemprop="description" content="Java后端工程师，曾就职于知乎，现就职于水滴">
+      <meta itemprop="image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/settings/%E5%A4%B4%E5%83%8F.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Redmaple1的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基础加固-工厂模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-27 14:00:00" itemprop="dateCreated datePublished" datetime="2019-06-27T14:00:00+08:00">2019-06-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-02 14:31:50" itemprop="dateModified" datetime="2019-07-02T14:31:50+08:00">2019-07-02</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&ensp;&ensp;&ensp;随着工作年限的增加，对工作中的代码结构和质量的追求也在增加。之前看书学习过的设计模式，当时也就是看看，看过或许有的忘记，或许不会使用。入职新公司以来，看团队高级工程师的代码，为了实现一个需求，可以使用合适的设计模式去规范代码，使代码的可读性和可扩展性都大大提升，我意识到是时候巩固一下基础，系统学习一下设计模式了。从这边文章开始，我将从创建型模式中的工厂模式开始复习，实现简单的demo，对比各个模式的UML类图，希望提升自己的编码能力，同时也便于阅读各种开源框架的源码。闲话少许，我们开始吧~  </p>
+<h2 id="一、简单工厂模式"><a href="#一、简单工厂模式" class="headerlink" title="一、简单工厂模式"></a>一、简单工厂模式</h2><h3 id="1-问题引入"><a href="#1-问题引入" class="headerlink" title="1.问题引入"></a>1.问题引入</h3><p>&ensp;&ensp;&ensp;首先来看一个场景，我有一个抽象类Game，标识这个类为一个游戏，游戏可以有很多种，比如“马里奥”、“塞尔达”等等。创建一个具体的游戏，一种最简单的方式就是创建一个具体游戏类继承Game抽象类，然后重写里面的建造方法。代码如下：<br><figure class="highlight java"><figcaption><span>Game.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>  </p>
+<p>Mario游戏<br><figure class="highlight java"><figcaption><span>MarioGame.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarioGame</span> <span class="keyword">extends</span> <span class="title">Game</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Mario game produced!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>  </p>
+<p>Zelda游戏<br><figure class="highlight java"><figcaption><span>ZeldaGame.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZeldaGame</span> <span class="keyword">extends</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Zelda game produced!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>这样我们在需要创建某种游戏的时候，直接new对应的具体游戏类,调用其中的建造方法即可。<br><figure class="highlight java"><figcaption><span>ZeldaGame.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Game game = <span class="keyword">new</span> MarioGame();</span><br><span class="line">        game.produce();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以看到控制台中打印的结果，创建了Mario游戏<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mario game produced!</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure><br>&ensp;&ensp;&ensp;看到这里，大家肯定已经发现了这种写法的弊端。每次需要直接new出来想要的具体游戏类，我们如果能使用一个工具去创建我们想要的具体游戏类，不需要关心创建的过程，那岂不是很爽吗？这时候简单工厂模式就登场了。  </p>
+<h3 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2.代码实现"></a>2.代码实现</h3><p>&ensp;&ensp;&ensp;和上面一样，还是有我们的抽象游戏Game类，不同的游戏去继承Game类，实现自己的produce方法。不同的是，这次我们创建一个简单工厂类GameFactory，根据参数通过这个工厂去创建我们需要的具体游戏类。具体代码如下：<br><figure class="highlight java"><figcaption><span>GameFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">(String type)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"mario"</span>.equalsIgnoreCase(type))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> MarioGame();</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"zelda"</span>.equalsIgnoreCase(type))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ZeldaGame();</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>这样，我们在使用工厂类创建具体游戏类的时候就不用直接new出来具体的游戏，直接使用工厂类就可以了。<br><figure class="highlight java"><figcaption><span>GameFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        GameFactory gameFactory = <span class="keyword">new</span> GameFactory();</span><br><span class="line">        Game game = gameFactory.getGame(<span class="string">"zelda"</span>);</span><br><span class="line">        <span class="keyword">if</span> (game == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        game.produce();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>结果如下，我们成功创建了zelda游戏<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Zelda game produced!</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>  </p>
+<h3 id="3-UML"><a href="#3-UML" class="headerlink" title="3.UML"></a>3.UML</h3><p>我们先看一下未引入简单工厂时候的UML类图。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/GameOriginUML.png" width="50%" height="50%"><br>&ensp;&ensp;&ensp;可以看到我们创建Mario和Zelda两个游戏，都分别通过具体的类进行创建，以后如果要创建更多的游戏，那时的UML大家应该可以想象，从应用方向不同的具体游戏类都会有create联系，整个关系就非常杂乱。我们使用了简单工厂模式之后的UML是什么样的呢？<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/GameSimpleFactoryUML.png" width="50%" height="50%">  </p>
+<p>&ensp;&ensp;&ensp;这样应用方使用简单工厂创建不同的游戏时，只需要告诉工厂我需要什么游戏即可，就不必关心我应该具体new什么游戏了。<br>&ensp;&ensp;&ensp;当然这里实现的简单工厂是最简单的形式，其实完全可以在工厂类中使用java反射创建不同的游戏，在应用方使用的时候，传入对应的Class即可  </p>
+<h2 id="二、工厂方法模式"><a href="#二、工厂方法模式" class="headerlink" title="二、工厂方法模式"></a>二、工厂方法模式</h2><h3 id="1-问题引入-1"><a href="#1-问题引入-1" class="headerlink" title="1.问题引入"></a>1.问题引入</h3><p>&ensp;&ensp;&ensp;通过上面简单工厂模式，我们已经可以通过工厂来创建具体的对象。但是这时候我需要增加一个新的“精灵宝可梦”的游戏，我们怎么操作呢？也很简单，新建一个Pokemon游戏的类继承Game，实现自己的produce方法，在工厂类中修改逻辑，使工厂可以创建新的游戏。你可能会说，这样也很好啊，创建新游戏的时候我只需要去改工厂里的逻辑就好了，但是当类越来越多，逻辑越来越复杂，你的工厂类就会变得特别庞大，每次创建新的游戏都要修改这个工厂类，是不符合软件设计中的开闭原则的。这时候，如果按不同游戏的类型把工厂分为不同的工厂，创建的时候只需要使用对应的工厂生产我们需要的游戏就好了。  </p>
+<h3 id="2-代码实现-1"><a href="#2-代码实现-1" class="headerlink" title="2.代码实现"></a>2.代码实现</h3><p>&ensp;&ensp;&ensp;首先我们新创建“精灵宝可梦”游戏类，同样让它继承Game。<br><figure class="highlight java"><figcaption><span>PokemonGame.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PokemonGame</span> <span class="keyword">extends</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Pokemon game produced!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>刚刚说到，要按不同游戏的类型创建不同的工厂，这里我们首先把工厂抽象出来，建一个抽象工厂类<br><figure class="highlight java"><figcaption><span>GameFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Game <span class="title">getGame</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>之后，通过继承这个抽象工厂类，创建“马里奥”、“塞尔达”、“精灵宝可梦”的工厂<br><figure class="highlight java"><figcaption><span>MarioGameFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarioGameFactory</span> <span class="keyword">extends</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MarioGame();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><figure class="highlight java"><figcaption><span>ZeldaGameFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZeldaGameFactory</span> <span class="keyword">extends</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ZeldaGame();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><figure class="highlight java"><figcaption><span>PokemonGameFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PokemonGameFactory</span> <span class="keyword">extends</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PokemonGame();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>这些不同的工厂创建后，我们就可以使用各自的工厂来生产各自的游戏了，这里以生产Pokemon游戏为例<br><figure class="highlight java"><figcaption><span>Test.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        GameFactory gameFactory = <span class="keyword">new</span> PokemonGameFactory();</span><br><span class="line">        Game game = gameFactory.getGame();</span><br><span class="line">        game.produce();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>执行代码，控制台输出如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Pokemon game produced!</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure><br>我们已经成功将简单工厂升级成了工厂方法模式，提高了代码的可复用性。</p>
+<h3 id="3-UML-1"><a href="#3-UML-1" class="headerlink" title="3.UML"></a>3.UML</h3><p>这时候的UML类图如下:<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/GameFactoryMethodUML.png" width="50%" height="50%">  </p>
+<h2 id="三、抽象工厂模式"><a href="#三、抽象工厂模式" class="headerlink" title="三、抽象工厂模式"></a>三、抽象工厂模式</h2><h3 id="1-问题引入-2"><a href="#1-问题引入-2" class="headerlink" title="1.问题引入"></a>1.问题引入</h3><p>&ensp;&ensp;&ensp;假如每个游戏都有一个游戏社区，比如Mario有游戏还有游戏社区，Pokemon也有游戏和游戏社区，这里Mario的游戏和社区属于同一个产品族，Pokemon的游戏和社区也属于同一个产品族；而Mario的游戏社区和Pokemon的游戏社区属于同一产品等级，Mario游戏和Pokemon游戏属于同一产品等级。有类似于这种关系的场景，我们使用一种怎样的模式呢？</p>
+<h3 id="2-代码实现-2"><a href="#2-代码实现-2" class="headerlink" title="2.代码实现"></a>2.代码实现</h3><p>&ensp;&ensp;&ensp;首先我们创建一个接口，抽象出来一个工厂GameFactory，这个抽象工厂定义了可以获取游戏和游戏社区的方法。<br><figure class="highlight java"><figcaption><span>GameFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="function">Game <span class="title">getGame</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Community <span class="title">getCommunity</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>其中Game和Community是抽象类，具体的游戏和社区需要继承这两个抽象类自己去实现。<br><figure class="highlight java"><figcaption><span>Game.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><figure class="highlight java"><figcaption><span>Community.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Community</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><figure class="highlight java"><figcaption><span>MarioGame.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarioGame</span> <span class="keyword">extends</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Mario game produced!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><figure class="highlight java"><figcaption><span>MarioCommunity.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarioCommunity</span> <span class="keyword">extends</span> <span class="title">Community</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Mario community produced."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>之后定义不同的具体工厂，实现GameFactory接口，实现接口中的获取游戏和游戏社区的方法。这里的游戏和社区属于同一产品族，使用具体的工厂可以获得同一产品族的对象。<br>Mario产品族的工厂<br><figure class="highlight java"><figcaption><span>MarioFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarioFactory</span> <span class="keyword">implements</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MarioGame();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Community <span class="title">getCommunity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MarioCommunity();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>Pokemon产品族的工厂<br><figure class="highlight java"><figcaption><span>PokemonFactory.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PokemonFactory</span> <span class="keyword">implements</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PokemonGame();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Community <span class="title">getCommunity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PokemonCommunity();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>我们写一个测试类测试一下。<br><figure class="highlight java"><figcaption><span>Test.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建抽象工厂，指定是Mario工厂</span></span><br><span class="line">        GameFactory gameFactory = <span class="keyword">new</span> MarioFactory();</span><br><span class="line">        <span class="comment">//调用抽象工厂的方法获取游戏和游戏社区</span></span><br><span class="line">        Game game = gameFactory.getGame();</span><br><span class="line">        Community community = gameFactory.getCommunity();</span><br><span class="line">        <span class="comment">//会根据具体工厂的不同获得不同的游戏和游戏社区，这里是Mario产品族</span></span><br><span class="line">        game.produce();</span><br><span class="line">        community.produce();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>  </p>
+<h3 id="3-UML-2"><a href="#3-UML-2" class="headerlink" title="3.UML"></a>3.UML</h3><p>我们来看一下现在的UML类图。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/design_pattern/AbstractFactoryUML.png" width="50%" height="50%"><br>&ensp;&ensp;&ensp;关系很清晰，大家都可以理解。现在想一个问题，如果我们的业务场景需要经常增加产品族内的产品，那么我们总是需要增加抽象工厂里的方法，进而修改抽象工厂的实现，这么一来就不符合软件设计的开闭原则了；如果我们的业务场景需要经常增加产品等级，这时候我们仅需要添加相应的产品工厂和产品类即可。  </p>
+<p>&ensp;&ensp;&ensp;以上介绍了三种工厂相关的模式，不能说哪种模式更优于哪种，只能根据具体的业务场景，选择合适的模式。没有最好的设计模式，只有最适合的设计模式。  </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/29/记一次大批量物理删除数据/" rel="next" title="记一次大批量物理删除数据">
+                <i class="fa fa-chevron-left"></i> 记一次大批量物理删除数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTk0Ny8xNjQ3NA=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/settings/%E5%A4%B4%E5%83%8F.jpg" alt="Xiaoya Ren">
+            
+              <p class="site-author-name" itemprop="name">Xiaoya Ren</p>
+              <p class="site-description motion-element" itemprop="description">Java后端工程师，曾就职于知乎，现就职于水滴</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/redmaple1" target="_blank" title="GitHub"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、简单工厂模式"><span class="nav-number">1.</span> <span class="nav-text">一、简单工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-问题引入"><span class="nav-number">1.1.</span> <span class="nav-text">1.问题引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-代码实现"><span class="nav-number">1.2.</span> <span class="nav-text">2.代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-UML"><span class="nav-number">1.3.</span> <span class="nav-text">3.UML</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、工厂方法模式"><span class="nav-number">2.</span> <span class="nav-text">二、工厂方法模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-问题引入-1"><span class="nav-number">2.1.</span> <span class="nav-text">1.问题引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-代码实现-1"><span class="nav-number">2.2.</span> <span class="nav-text">2.代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-UML-1"><span class="nav-number">2.3.</span> <span class="nav-text">3.UML</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、抽象工厂模式"><span class="nav-number">3.</span> <span class="nav-text">三、抽象工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-问题引入-2"><span class="nav-number">3.1.</span> <span class="nav-text">1.问题引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-代码实现-2"><span class="nav-number">3.2.</span> <span class="nav-text">2.代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-UML-2"><span class="nav-number">3.3.</span> <span class="nav-text">3.UML</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoya Ren</span>
+
+  
+
+  
+</div>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  <span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+    <script type="text/javascript">
+      window.livereOptions = {
+        refer: '2019/06/27/基础加固-工厂模式/'
+      };
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
