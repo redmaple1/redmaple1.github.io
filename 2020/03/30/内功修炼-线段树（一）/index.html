@@ -121,7 +121,7 @@
 <meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/segmentTree/%E7%BA%BF%E6%AE%B5%E6%A0%91-10%E8%8A%82%E7%82%B9.png">
 <meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/segmentTree/%E6%95%B0%E7%BB%84%E6%89%80%E9%9C%80%E8%8A%82%E7%82%B9%E4%B8%89%E8%A7%92.png">
 <meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/segmentTree/%E6%B5%AA%E8%B4%B9%E8%8A%82%E7%82%B9%E6%BC%94%E7%A4%BA.png">
-<meta property="og:updated_time" content="2020-03-30T12:00:38.449Z">
+<meta property="og:updated_time" content="2020-03-30T12:22:41.965Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内功修炼-线段树（一）">
 <meta name="twitter:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前一阵子朋友换工作，去了新公司的一个基础服务的部门。对数据结构和算法的要求着实不低，不是平常的CRUD，而是通过各种巧妙的数据结构去完成对应的业务需求。我发现是时候夯实一下基础了，这次来看一下树结构中的线段树。 一、什么是线段树&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;有一种很经典的线段树问题：区间染色。&amp;ensp;&amp;ensp;&amp;ensp;&amp;e">
@@ -361,7 +361,7 @@
                 
               
 
-              <time title="创建时间：2020-03-30 19:55:00 / 修改时间：20:00:38" itemprop="dateCreated datePublished" datetime="2020-03-30T19:55:00+08:00">2020-03-30</time>
+              <time title="创建时间：2020-03-30 19:55:00 / 修改时间：20:22:41" itemprop="dateCreated datePublished" datetime="2020-03-30T19:55:00+08:00">2020-03-30</time>
             
 
             
@@ -418,7 +418,7 @@
 
       
         <p>&ensp;&ensp;&ensp;&ensp;前一阵子朋友换工作，去了新公司的一个基础服务的部门。对数据结构和算法的要求着实不低，不是平常的CRUD，而是通过各种巧妙的数据结构去完成对应的业务需求。我发现是时候夯实一下基础了，这次来看一下树结构中的线段树。</p>
-<h1 id="一、什么是线段树"><a href="#一、什么是线段树" class="headerlink" title="一、什么是线段树"></a>一、什么是线段树</h1><p>&ensp;&ensp;&ensp;&ensp;有一种很经典的线段树问题：区间染色。<br>&ensp;&ensp;&ensp;&ensp;讲的是有一面长度为 n 的墙，每次选择一段儿墙进行染色。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/segmentTree/%E5%BC%95%E5%85%A5%E5%8C%BA%E9%97%B4%E6%9F%93%E8%89%B2.png" alt="image"><br>&ensp;&ensp;&ensp;&ensp;在染色的过程中，会有一部分被重复染色，那么 m 次操作后，我们可以看见多少种颜色呢？在 [i,j] 区间内可以看见多少中颜色呢？<br>&ensp;&ensp;&ensp;&ensp;我们可以知道上述的问题是对区间进行以下的操作：</p>
+<h1 id="一、什么是线段树"><a href="#一、什么是线段树" class="headerlink" title="一、什么是线段树"></a>一、什么是线段树</h1><p>&ensp;&ensp;&ensp;&ensp;有一种很经典的线段树问题：区间染色。<br>&ensp;&ensp;&ensp;&ensp;讲的是有一面长度为 n 的墙，每次选择一段儿墙进行染色。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/segmentTree/%E5%BC%95%E5%85%A5%E5%8C%BA%E9%97%B4%E6%9F%93%E8%89%B2.png" alt="image"><br>&ensp;&ensp;&ensp;&ensp;在染色的过程中，会有一部分被重复染色，那么 m 次操作后，我们可以看见多少种颜色呢？在 [i,j] 区间内可以看见多少种颜色呢？<br>&ensp;&ensp;&ensp;&ensp;我们可以知道上述的问题是对区间进行以下的操作：</p>
 <ul>
 <li>更新区间（染色操作）</li>
 <li>查询区间（查询操作）<br>&ensp;&ensp;&ensp;&ensp;通过上面的图片描述，我们很容易可以想到利用数组来实现，对于染色操作和查询操作时间复杂度均是是 O(n)。<br>&ensp;&ensp;&ensp;&ensp;其实更普遍一点，这一类问题的实质，是基于区间的统计查询。比如一个电商网站，需要看2019年的注册用户消费额最高的用户。这里需要注意，我们关注的是动态的情况，是看在2019年注册的用户在到现在为止消费额的统计量，并不是说在单单在2019年消费最高的。如果是单单2019年消费最高的统计，直接拿出2019年的数据进行统计即可，因为2019年的数据已经是定值了。我们考虑的是动态的情况，是伴随更新的同时进行查询，即既有更新又有查询的操作，此时，使用线段树是一种好的选择。当然依然可以使用普通数组进行实现，只不过使用线段树的时间复杂度会低一些。  </li>
@@ -445,7 +445,7 @@
 </tbody>
 </table>
 <p>&ensp;&ensp;&ensp;&ensp;我们总结以上讨论的问题场景：  </p>
-<p>&ensp;&ensp;&ensp;&ensp;对于给定的区间，支持一下两种操作。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;对于给定的区间，支持以下两种操作。  </p>
 <ul>
 <li><p>更新： 更新区间中一个元素或者一个区间的值  </p>
 </li>
