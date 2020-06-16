@@ -108,22 +108,20 @@
 
 
 
-  <meta name="description" content="最近接手了一个闹钟App的后端项目，其中有个功能就是用户可以将本地闹钟同步到服务器，以便更换设备后能从服务器同步数据到新设备。但是这几天观察后台日志发现，同步的时候总是ERROR，定位错误发现跟数据库的字符集有关，在此记录一下本次线上错误的排查过程。 一、定位ERROR通过Kibana查看最近的ERROR日志，可发现如下的错误描述。&amp;ensp;&amp;ensp;&amp;ensp;很明显可以发现，是因为inse">
-<meta name="keywords" content="数据库,线上">
+  <meta name="keywords" content="Wechaty,分享">
 <meta property="og:type" content="article">
-<meta property="og:title" content="记一次数据库更改字符集踩的坑">
-<meta property="og:url" content="http://redmapleren.com/2019/04/19/记一次数据库更改字符集踩的坑/index.html">
+<meta property="og:title" content="简单聊聊Puppet Manager的实现">
+<meta property="og:url" content="http://redmapleren.com/2020/06/16/简单聊聊Puppet Manager的实现/index.html">
 <meta property="og:site_name" content="Redmaple1的博客">
-<meta property="og:description" content="最近接手了一个闹钟App的后端项目，其中有个功能就是用户可以将本地闹钟同步到服务器，以便更换设备后能从服务器同步数据到新设备。但是这几天观察后台日志发现，同步的时候总是ERROR，定位错误发现跟数据库的字符集有关，在此记录一下本次线上错误的排查过程。 一、定位ERROR通过Kibana查看最近的ERROR日志，可发现如下的错误描述。&amp;ensp;&amp;ensp;&amp;ensp;很明显可以发现，是因为inse">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/database/index_accident/incorrect.png">
-<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/database/index_accident/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88explain.png">
-<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/database/index_accident/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88explain.png">
-<meta property="og:updated_time" content="2019-04-19T09:19:21.571Z">
+<meta property="og:image" content="https://wechaty.github.io/java-wechaty/images/java-wechaty.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/wechaty/%E8%AE%BE%E8%AE%A1%E8%83%8C%E6%99%AF.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/wechaty/manager%E7%AE%A1%E7%90%86%E5%90%8E.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/wechaty/manager%E5%B1%95%E6%9C%9B.png">
+<meta property="og:updated_time" content="2020-06-16T03:41:50.200Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="记一次数据库更改字符集踩的坑">
-<meta name="twitter:description" content="最近接手了一个闹钟App的后端项目，其中有个功能就是用户可以将本地闹钟同步到服务器，以便更换设备后能从服务器同步数据到新设备。但是这几天观察后台日志发现，同步的时候总是ERROR，定位错误发现跟数据库的字符集有关，在此记录一下本次线上错误的排查过程。 一、定位ERROR通过Kibana查看最近的ERROR日志，可发现如下的错误描述。&amp;ensp;&amp;ensp;&amp;ensp;很明显可以发现，是因为inse">
-<meta name="twitter:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/database/index_accident/incorrect.png">
+<meta name="twitter:title" content="简单聊聊Puppet Manager的实现">
+<meta name="twitter:image" content="https://wechaty.github.io/java-wechaty/images/java-wechaty.png">
 
 
 
@@ -132,7 +130,7 @@
 
 
 
-  <link rel="canonical" href="http://redmapleren.com/2019/04/19/记一次数据库更改字符集踩的坑/">
+  <link rel="canonical" href="http://redmapleren.com/2020/06/16/简单聊聊Puppet Manager的实现/">
 
 
 
@@ -142,7 +140,7 @@
   };
 </script>
 
-  <title>记一次数据库更改字符集踩的坑 | Redmaple1的博客</title>
+  <title>简单聊聊Puppet Manager的实现 | Redmaple1的博客</title>
   
 
 
@@ -317,7 +315,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://redmapleren.com/2019/04/19/记一次数据库更改字符集踩的坑/">
+    <link itemprop="mainEntityOfPage" href="http://redmapleren.com/2020/06/16/简单聊聊Puppet Manager的实现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Xiaoya Ren">
@@ -334,7 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">记一次数据库更改字符集踩的坑
+          <h1 class="post-title" itemprop="name headline">简单聊聊Puppet Manager的实现
               
             
           </h1>
@@ -359,7 +357,7 @@
                 
               
 
-              <time title="创建时间：2019-04-19 14:30:00 / 修改时间：17:19:21" itemprop="dateCreated datePublished" datetime="2019-04-19T14:30:00+08:00">2019-04-19</time>
+              <time title="创建时间：2020-06-16 10:55:00 / 修改时间：11:41:50" itemprop="dateCreated datePublished" datetime="2020-06-16T10:55:00+08:00">2020-06-16</time>
             
 
             
@@ -381,7 +379,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Wechaty/" itemprop="url" rel="index"><span itemprop="name">Wechaty</span></a></span>
 
                 
                 
@@ -415,10 +413,60 @@
       
 
       
-        <p>最近接手了一个闹钟App的后端项目，其中有个功能就是用户可以将本地闹钟同步到服务器，以便更换设备后能从服务器同步数据到新设备。但是这几天观察后台日志发现，同步的时候总是ERROR，定位错误发现跟数据库的字符集有关，在此记录一下本次线上错误的排查过程。</p>
-<h2 id="一、定位ERROR"><a href="#一、定位ERROR" class="headerlink" title="一、定位ERROR"></a>一、定位ERROR</h2><p>通过Kibana查看最近的ERROR日志，可发现如下的错误描述。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/database/index_accident/incorrect.png" width="100%" height="100%"><br><br>&ensp;&ensp;&ensp;很明显可以发现，是因为insert的时候插入的数据不符合该列的要求。进而查看插入的数据，定位到插入内容含有特殊字符，比如emoji表情和其他一些字符。查询table的字符集发现这张表是utf8字符集，并不是utf8mb4的字符集，所以报这个错也是很正常了。看到这里你可能会问，这个问题应该在很久之前就应该发现了，为什么这几天才把它揪出来呢？这个项目很早了，包括后端和客户端，经过客户端同学的代码筛查，发现由于历史的原因，客户端对同步的结果的处理存在bug，导致后台同步失败某冲情况下也会提示同步成功，所以前台并不会暴露这个问题。<br>&ensp;&ensp;&ensp;所以当时建表使用的utf8字符集已经不能满足用户的自定义名称的需求，需要变更这张表的字符集为utf8mb4。但是一查数据，这张表就有七千多万的数据，更改字符集的话对之前的内容是否有影响，要执行多久？问题找到了，就开始找dba同学商量，最后决定先创建一张utf8mb4的新表，将原来的数据导入到新表，完成后，再将原表rename成新表，完成切换。说干就干，晚上提了工单，dba开始执行。</p>
-<h2 id="二、黎明前的黑暗"><a href="#二、黎明前的黑暗" class="headerlink" title="二、黎明前的黑暗"></a>二、黎明前的黑暗</h2><p>&ensp;&ensp;&ensp;第二天早上起床，发现接到了n多条服务报警，正是昨天更改字符集的服务。到了公司立马查看服务日志，发现服务挂了，重新部署启动，没有两分钟又挂了。这是什么原因呢？没有更改任何代码，只更改了一个表的字符集，整个服务就崩了吗？这是什么道理，一时间也是很懵。这时候dba那边发来了一长串slow sql，是一个两个表的连表查询，一开始我并未用explain分析sql语句，因为sql较简单，发现语句的书写还算规范，该走的索引也会走，一时间也无法定位问题。<br>&ensp;&ensp;&ensp;难道是昨天修改字符集之后，insert无异常，表的增量变大，查询变得更加慢了？根据这个猜测，为了临时解决这个问题，准备将这一小段代码修改成分表查询，在内存里聚合处理。正在准备拉分支修改代码的时候，dba同学那边发消息说是索引失效了。我赶紧explain了一下刚刚的sql语句，果然，之前应该走的索引在改了字符集之后就失效了。<br>修改字符集之后的explain结果：<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/database/index_accident/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88explain.png" width="100%" height="100%"><br><br>修改字符集之前的explain结果：<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/database/index_accident/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88explain.png" width="100%" height="100%"><br><br>原来连表查询的时候，两个表的字符集不同会导致索引失效，所以在这个如此多数据的表中进行连表查询是一件灾难性的事。<br>找到原因后，将连表查询的另一个表的字符集同样做出修改，之后索引正常，服务也正常了。  </p>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>通过这次处理线上问题，深深体会到在表数据很多的时候进行连表查询是一件多么可怕的事情，一不小心就把数据库或者服务搞崩溃了。还有一点很关键，不要像我一样看到sql简单就理所当然地以为会按照理论的情况走索引，拿到有问题的sql，一定要仔细分析，使用工具，比如explain来辅助分析sql，这样才不会遗漏问题。后续我们会对这个项目进行重构，将所有连表查询改成单表查询，然后在内存中对数据做聚合。另外这个表的数据已经到达七千多万了，修改了正确的字符集之后表的增量会更大，分表的工作也迫在眉睫。<br>本文仅此记录下问题排查经过，如果大家也遇到了类似的问题，希望可以进行参考。</p>
+        <p><img src="https://wechaty.github.io/java-wechaty/images/java-wechaty.png" alt="Java Wechaty">  </p>
+<a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&ensp;&ensp;&ensp;&ensp;今天我们来聊一聊最近参与的一个开源项目，这里借用java-wechaty的maintainer犀利豆的博客介绍一下wechaty是什么，以及java版本的前世今生。</p>
+<blockquote>
+<p>犀利豆<br><a href="https://xilidou.com/2020/06/03/java-wechaty/" target="_blank" rel="noopener">终于有一个Java可以用的微信机器人了</a></p>
+</blockquote>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>&ensp;&ensp;&ensp;&ensp;参与开发java-wechaty有一个多月的时间，在开发的过程中，不免要进行自测。在前期没有token调试不便的情况下，就想借助单测对所写代码进行验证，但是我发现想要进行单测也不是一件容易的事情。与以往 java web 开发不同，没有Spring封装好的带有上下文的test。于是，我借鉴ts版本wechaty的mock模块，实现了java-wechaty的mock puppet，专门用于测试wechaty上层代码逻辑。开心地实现完成mock puppet之后，又发现了新的问题。那就是现有java版本的wechaty在初始化puppet的时候，在代码中写死了hostie puppet，也就是图中的<code>GrpcPuppet</code>。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/wechaty/%E8%AE%BE%E8%AE%A1%E8%83%8C%E6%99%AF.png" alt="image">  </p>
+<p>&ensp;&ensp;&ensp;&ensp;这样的话，我就无法初始化mock puppet了，所以我就思考能不能有一个manager来管理puppet的具体实现。有了这个想法，那么如何进行优雅的实现呢？接下来我们简单来聊聊。</p>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><ul>
+<li><code>PuppetManager</code>来管理具体的puppet实现类</li>
+<li>在wechaty中通过调用<code>PuppetManager</code>的实例化方法，初始化出需要的puppet实现</li>
+<li>可使用反射机制处理puppet和具体实现类</li>
+</ul>
+<p>&ensp;&ensp;&ensp;&ensp;使用上述思路的改造，wechaty初始化的流程就变成了下图的样子。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/wechaty/manager%E7%AE%A1%E7%90%86%E5%90%8E.png" alt="image">  </p>
+<p>&ensp;&ensp;&ensp;&ensp;可以看到，在wechaty的<code>initPuppet()</code>方法中，不再是直接初始化<code>GrpcPuppet</code>，而是使用了<code>PuppetManager</code>的<code>resolveInstance()</code>方法拿到了初始化过的puppet实现。<br>&ensp;&ensp;&ensp;&ensp;那么<code>PuppetManager</code>具体是怎么实现的呢？其实很简单，直接看代码。  </p>
+<pre><code class="java"><span class="keyword">const</span> val REFLECTION_BASE_PACKAGE = <span class="string">"io.github.wechaty"</span>
+<span class="class"><span class="keyword">class</span> <span class="title">PuppetManager</span> </span>{
+
+    companion object {
+        <span class="keyword">private</span> val log = LoggerFactory.getLogger(PuppetManager::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span>
+<span class="class"></span>
+<span class="class">        @<span class="title">JvmStatic</span></span>
+        fun resolveInstance(wechatyOptions: WechatyOptions): Future&lt;Puppet&gt; {
+            log.info(<span class="string">"PuppetManager resolveInstance(${JsonUtils.write(wechatyOptions)})"</span>)
+
+            val reflections = Reflections(ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(REFLECTION_BASE_PACKAGE, Thread.currentThread().contextClassLoader)))
+
+            val subTypes: Set&lt;*&gt; = reflections.getSubTypesOf(Puppet::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span>
+<span class="class">            <span class="title">if</span> (<span class="title">subTypes</span>.<span class="title">isEmpty</span>()) </span>{
+                <span class="keyword">throw</span> java.lang.RuntimeException(<span class="string">"expect one puppet,but can not found any one."</span>)
+            }
+
+            <span class="keyword">if</span> (subTypes.size &gt; <span class="number">1</span>) {
+                <span class="keyword">throw</span> RuntimeException(<span class="string">"expect one puppet,but found ${subTypes.size}"</span>)
+            }
+            val clazz = subTypes.first() as Class&lt;*&gt;
+            val declaredConstructor = clazz.getDeclaredConstructor(PuppetOptions::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span>
+<span class="class">            <span class="title">return</span> <span class="title">CompletableFuture</span>.<span class="title">completedFuture</span>(<span class="title">declaredConstructor</span>.<span class="title">newInstance</span>(<span class="title">wechatyOptions</span>.<span class="title">puppetOptions</span>!!) <span class="title">as</span> <span class="title">Puppet</span>)</span>
+<span class="class">        }</span>
+<span class="class">    }</span>
+<span class="class"></span>
+<span class="class"></span>
+<span class="class">}</span>
+</code></pre>
+<p>&ensp;&ensp;&ensp;&ensp;首先定义了一个基础的包路径，在该路径下使用<code>reflections</code>库，扫描所有实现了Puppet的类。因为我们必须需要一个puppet具体实现类，所以当我们扫描不到任何puppet的实现时，会抛出异常，告知开发者期望有一个puppet实现类，但是在classpath下并没有找到。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;其次，当前我们只支持单次实例化一种puppet实现，所以当在路径下扫描到多于1个puppet实现类时，同样会抛出异常，提示开发者classpath中存在一个以上的puppet实现。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;上面两种情况均未抛出异常的，说明manager已经找到了需要实例化的puppet实现，接下来就使用java反射，直接实例化即可。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;以上就是manager实例化puppet的简单实现。  </p>
+<h2 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h2><p>&ensp;&ensp;&ensp;&ensp;首次引入manager的版本中，我们把之前引入到wechaty sdk中的hostie puppet实现拿了出来，在sdk中仅引入puppet定义层。这样，使用者需要哪种puppet实现，自己引入即可，作为sdk就不再关心了。<br>&ensp;&ensp;&ensp;&ensp;但是这样又增添了使用者的使用门坎，不如之前仅引入sdk包就能使用方便，所以在接下来的版本中，我们还是打算在sdk中使用hostie puppet作为puppet的默认实现，如果使用者有使用其他puppet实现类的诉求，需要手动在pom中exclude掉hostie puppet的默认实现，然后引入需要的puppet实现即可。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;后续可能会支持多个puppet，那么manager就需要适当的改造去适配多个puppet实现。这里有一个简单的设计思路，在puppet定义层，我们可以定义一个mapping()方法，该方法的意思是作为一个puppet，我需要如何的映射才能初始化。那么具体怎么映射就交给子类，也就是具体的puppet实现类自己去实现。在manager中，我们只需要使用puppet定义层的mapping()方法就可以实现对子类的映射处理，作为manager，并不用关心当前到底是谁在初始化。下图是大体的结构。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/wechaty/manager%E5%B1%95%E6%9C%9B.png" alt="image">  </p>
+<p>&ensp;&ensp;&ensp;&ensp;有了<code>PuppetManager</code>，我们的java-wechaty实现得更加优雅了一些，而且实现了mock puppet，后续就可以通过单测提高代码的质量，提升稳定性，相信我们的java-wechaty会越来越完善。<br>&ensp;&ensp;&ensp;&ensp;如果你对wechaty感兴趣，恰巧又是java developer，对java-wechaty有自己的想法或对目前的代码实现有任何好的建议，期待你的加入，为java-wechaty贡献代码~</p>
 
       
     </div>
@@ -439,9 +487,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+            <a href="/tags/Wechaty/" rel="tag"># Wechaty</a>
           
-            <a href="/tags/线上/" rel="tag"># 线上</a>
+            <a href="/tags/分享/" rel="tag"># 分享</a>
           
         </div>
       
@@ -454,8 +502,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/23/关于红黑树的学习笔记/" rel="next" title="关于红黑树的学习笔记">
-                <i class="fa fa-chevron-left"></i> 关于红黑树的学习笔记
+              <a href="/2020/04/02/内功修炼-线段树（二）/" rel="next" title="内功修炼-线段树（二）">
+                <i class="fa fa-chevron-left"></i> 内功修炼-线段树（二）
               </a>
             
           </div>
@@ -463,10 +511,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/29/记一次大批量物理删除数据/" rel="prev" title="记一次大批量物理删除数据">
-                记一次大批量物理删除数据 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -655,7 +699,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、定位ERROR"><span class="nav-number">1.</span> <span class="nav-text">一、定位ERROR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、黎明前的黑暗"><span class="nav-number">2.</span> <span class="nav-text">二、黎明前的黑暗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、总结"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">2.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现思路"><span class="nav-number">3.</span> <span class="nav-text">实现思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#展望"><span class="nav-number">4.</span> <span class="nav-text">展望</span></a></li></ol></div>
             
 
           </div>
@@ -835,7 +879,7 @@
   
     <script type="text/javascript">
       window.livereOptions = {
-        refer: '2019/04/19/记一次数据库更改字符集踩的坑/'
+        refer: '2020/06/16/简单聊聊Puppet Manager的实现/'
       };
       (function(d, s) {
         var j, e = d.getElementsByTagName(s)[0];
