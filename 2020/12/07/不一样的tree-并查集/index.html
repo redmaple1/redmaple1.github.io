@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;很久没有更新文章了，周末又巩固了一下数据结构基础，这次我们来看一下有些不一样的树结构-并查集。 一、什么是并查集&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;下图所示的一些节点，节点之间可以相连，如果想要知道某两个节点是否可以连通，这个问题如何解呢？&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;这是典型的连接问题，像下图这种节点很少的情况，肉眼一">
+<meta name="keywords" content="数据结构,树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="不一样的tree-并查集">
+<meta property="og:url" content="http://redmapleren.com/2020/12/07/不一样的tree-并查集/index.html">
+<meta property="og:site_name" content="Redmaple1的博客">
+<meta property="og:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;很久没有更新文章了，周末又巩固了一下数据结构基础，这次我们来看一下有些不一样的树结构-并查集。 一、什么是并查集&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;下图所示的一些节点，节点之间可以相连，如果想要知道某两个节点是否可以连通，这个问题如何解呢？&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;这是典型的连接问题，像下图这种节点很少的情况，肉眼一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E8%BF%9E%E6%8E%A5%E9%97%AE%E9%A2%98.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/isConnected%E8%BD%AC%E5%8C%96.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/quickUnion%E5%9B%BE%E7%A4%BA.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/3%E6%8C%87%E5%90%912.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E8%8A%82%E7%82%B91%E5%90%88%E5%B9%B6%E5%88%B0%E8%8A%82%E7%82%B93.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%B7%A6%E5%AD%90%E6%A0%91%E5%90%88%E5%B9%B6%E5%88%B02.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/parent%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/parent-union4-3.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union3-8-union6-5.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/parent-union9-4.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union2-1-union-5-0.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union-7-2-union-6-2.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union%E9%93%BE%E8%A1%A8.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union0-3size%E4%BC%98%E5%8C%96.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/rank%E5%88%9D%E5%A7%8B.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/rank-size.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/rank-union.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%8E%8B%E7%BC%A9%E5%88%9D%E5%A7%8B.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%8E%8B%E7%BC%A9-1.png">
+<meta property="og:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%8E%8B%E7%BC%A9-2.png">
+<meta property="og:updated_time" content="2020-12-11T11:49:37.448Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="不一样的tree-并查集">
+<meta name="twitter:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;很久没有更新文章了，周末又巩固了一下数据结构基础，这次我们来看一下有些不一样的树结构-并查集。 一、什么是并查集&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;下图所示的一些节点，节点之间可以相连，如果想要知道某两个节点是否可以连通，这个问题如何解呢？&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;这是典型的连接问题，像下图这种节点很少的情况，肉眼一">
+<meta name="twitter:image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E8%BF%9E%E6%8E%A5%E9%97%AE%E9%A2%98.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Redmaple1的博客" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://redmapleren.com/2020/12/07/不一样的tree-并查集/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>不一样的tree-并查集 | Redmaple1的博客</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?30507f01f58feb53029ffb23d22f1f1f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Redmaple1的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">我的个人技术博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://redmapleren.com/2020/12/07/不一样的tree-并查集/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoya Ren">
+      <meta itemprop="description" content="Java后端工程师，曾就职于知乎，现就职于水滴">
+      <meta itemprop="image" content="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/settings/%E5%A4%B4%E5%83%8F.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Redmaple1的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">不一样的tree-并查集
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-07 15:55:00" itemprop="dateCreated datePublished" datetime="2020-12-07T15:55:00+08:00">2020-12-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-12-11 19:49:37" itemprop="dateModified" datetime="2020-12-11T19:49:37+08:00">2020-12-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&ensp;&ensp;&ensp;&ensp;很久没有更新文章了，周末又巩固了一下数据结构基础，这次我们来看一下有些不一样的树结构-并查集。</p>
+<h1 id="一、什么是并查集"><a href="#一、什么是并查集" class="headerlink" title="一、什么是并查集"></a>一、什么是并查集</h1><p>&ensp;&ensp;&ensp;&ensp;下图所示的一些节点，节点之间可以相连，如果想要知道某两个节点是否可以连通，这个问题如何解呢？<br>&ensp;&ensp;&ensp;&ensp;这是典型的连接问题，像下图这种节点很少的情况，肉眼一看就会得到答案，但当有成千上万的节点时，又该如何解决问题呢？我们要说的并查集就是解决连接问题的一种解决方案。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E8%BF%9E%E6%8E%A5%E9%97%AE%E9%A2%98.png" alt="image">  </p>
+<p>&ensp;&ensp;&ensp;&ensp;并查集可以非常快速地判断网络中节点的连接状态。这里的网络是一个抽象的概念，比如可以是社交网络，那么人就是一个一个的节点，人与人之间的关系就是节点与节点之间的边，若要知道两个人之间是否有直接或间接的好友关系，就可以使用并查集来实现。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;对于一组数据，并查集主要支持两个动作：  </p>
+<ul>
+<li><code>union(p,q)</code><br>在并查集内部，将p、q两个元素以及他们所在的集合合并起来。</li>
+<li><code>isConnected(p,q)</code><br>查询对于给定的两个数据p、q，他们是否属于同一个集合。  </li>
+</ul>
+<p>&ensp;&ensp;&ensp;&ensp;对于并查集的这两个动作，我们可以抽象出一个接口来表示。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * UnionFind并查集接口</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> renxiaoya</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-12-06</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取并查集中有多少元素</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 并查集中有多少元素</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 两个元素是否相连</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p 元素编号p</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> q 元素编号q</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否相连</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isConnected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将两个元素并在一起</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p 元素编号p</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> q 元素编号q</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unionElement</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里我们的p和q指的是一个抽象的编号，可以理解为索引编号，比如<code>isConnected(p,q)</code>代表了编号为p的元素和编号为q的元素是否相连，至于p、q元素到底指的是什么，我们并不关心。接下来，我们来看看如何实现这个接口，实现并查集的功能。</p>
+<h1 id="二、并查集的实现"><a href="#二、并查集的实现" class="headerlink" title="二、并查集的实现"></a>二、并查集的实现</h1><p>&ensp;&ensp;&ensp;&ensp;假设有10个元素，编号从0到9，当然这些节点都是业务的抽象，可以是10个人、10辆车、10本书等等，具体的含义与不同的业务逻辑有关。在并查集的内部，我们只存这10个编号，表示具体的10个元素，每一个节点所存储的是它所属的这个集合的id。下图中，元素0所属的集合id为0，元素1所属的集合id为1，元素2所属的集合id为0，以此类推。不同的id值可以理解为不同的集合所对应的编号。下图的例子可以看成是把10个元素分成了两个集合，其中0，2，3，6，7，9这几个元素在一个集合中1，4，5，8这几个元素在另外的一个集合中。其实可以很容易的想到，我们可以使用一个数组来存储这样的结构，数组的索引就是对应的元素编号，索引所对应数组中的值就是集合的id。图中的元素0和元素2所对应的id值都为0，可以说元素0和元素2可以相连接。  </p>
+<h2 id="Quick-Find"><a href="#Quick-Find" class="headerlink" title="Quick Find"></a>Quick Find</h2><p>&ensp;&ensp;&ensp;&ensp;上面说到并查集主要的两个操作<code>union(p,q)</code>和<code>isConnected(p,q)</code>，对于数组存储的并查集来说，可以很容易的回答<code>isConnected(p,q)</code>，只需要看，数组索引p、q对应的值是否相同即可。这里我们把找到数组索引p或者q对应值的过程，也抽象为一个方法<code>find(p)</code>。那么判断<code>isConnected(p,q)</code>就转化为了判断<code>find(p)</code>与<code>find(q)</code>是否相等。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/isConnected%E8%BD%AC%E5%8C%96.png" width="50%" height="50%"><br>&ensp;&ensp;&ensp;&ensp;很显然，<strong>以上操作的时间复杂度是<code>O(1)</code>，对于这种存储的并查集，find这个操作是非常快的。</strong>  </p>
+<p>&ensp;&ensp;&ensp;&ensp;上面介绍了find的思路，接下来我们来看一下并查集另一个重要的动作<code>union(p,q)</code>,我们可以称为Quick Union。<br>&ensp;&ensp;&ensp;&ensp;还是以上面的并查集为例，如果想要实现<code>union(1,2)</code>，就需要把元素1所在集合与元素2所在集合合并起来，也就是说，这两个集合合并之后，集合中每一个元素对应的集合id值都是相同的。我们可以把元素1所在集合合并到元素2所在集合，也可以把元素2所在集合合并到元素1所在集合，要么全是0，要么全是1。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/quickUnion%E5%9B%BE%E7%A4%BA.png" width="60%" height="60%"></p>
+<p>&ensp;&ensp;&ensp;&ensp;实现思路也很简单，先找到元素p、q对应的id，如果id已经是相等的，说明元素p、q已经在一个集合中，直接return即可；否则的话，遍历一遍当前数组，每次遍历，如果当前索引下标对应的值与元素p对应的id相等，此时将当前索引下标对应的值设置为元素q对应的id。<br>&ensp;&ensp;&ensp;&ensp;<strong>因为遍历了一遍数组元素，所以<code>union(p,q)</code>的时间复杂度是<code>O(n)</code></strong>。</p>
+<p>&ensp;&ensp;&ensp;&ensp;因为find操作时间复杂度是<code>O(1)</code>，而union的时间复杂度是<code>O(n)</code>，所以这样实现的并查集我们也称为是<strong>Quick Find</strong><br>&ensp;&ensp;&ensp;&ensp;思路清楚了，下面我们看看代码如何实现<strong>Quick Find</strong>的并查集。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并查集实现 - v1</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 0 1 2 3 4 5 6 7 8 9</span></span><br><span class="line"><span class="comment"> * -------------------</span></span><br><span class="line"><span class="comment"> * 0 1 0 1 0 1 0 1 0 1</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * OP                 |   时间复杂度</span></span><br><span class="line"><span class="comment"> * unionElement(p,q) --&gt; O(n)</span></span><br><span class="line"><span class="comment"> * isConnected(p,q)  --&gt; O(1)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> renxiaoya</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-12-06</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFind1</span> <span class="keyword">implements</span> <span class="title">UF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UnionFind1</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">        id = <span class="keyword">new</span> <span class="keyword">int</span>[size];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; id.length; i++) &#123;</span><br><span class="line">            id[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isConnected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> find(p) == find(q);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionElement</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pId = find(p);</span><br><span class="line">        <span class="keyword">int</span> qId = find(q);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (pId == qId) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; id.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (id[i] == pId) &#123;</span><br><span class="line">                id[i] = qId;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查找元素p对应的集合编号</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p 元素p</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 集合编号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (p &lt; <span class="number">0</span> || p &gt;= id.length) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"p is out of bound."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> id[p];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;以上，我们实现了<strong>Quick Find</strong>的并查集。既然有<strong>Quick Find</strong>，是否有<strong>Quick Union</strong>呢？答案是肯定的。接下来我们来看一看如改进上面的实现，来提高union操作的效率。</p>
+<h2 id="Quick-Union"><a href="#Quick-Union" class="headerlink" title="Quick Union"></a>Quick Union</h2><p>&ensp;&ensp;&ensp;&ensp;上面实现的<strong>Quick Find</strong>好像和树没有任何关系，不要着急，我们来看看<strong>Quick Union</strong>的实现思路。<br>&ensp;&ensp;&ensp;&ensp;我们把每一个元素都看作是一个节点，节点之间相连接，形成了一个树的结构。不过这里的树和之前实现的二叉树、trie等是不同的，在<strong>并查集中实现的树结构是孩子指向父亲的</strong>。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;看个简单的示例。节点3与节点2相连接，其实就是节点3指向了节点2，而这里节点2是树的根节点，对于节点2，它指向自己。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/3%E6%8C%87%E5%90%912.png" width="40%" height="40%"><br>&ensp;&ensp;&ensp;&ensp;如果节点1想要和节点3合并，就把节点1指向节点3所在树的根节点，也就是节点2。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E8%8A%82%E7%82%B91%E5%90%88%E5%B9%B6%E5%88%B0%E8%8A%82%E7%82%B93.png" width="60%" height="60%"><br>&ensp;&ensp;&ensp;&ensp;如果并查集中有一棵树是左边子树的样子，5和6节点指向7节点，此时想要将节点7与节点2进行合并，如何操作呢？实际上是将节点7所在树的根节点指向节点2即可。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%B7%A6%E5%AD%90%E6%A0%91%E5%90%88%E5%B9%B6%E5%88%B02.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;如果我们想将节点7与节点3合并，得到的结果还是上图的样子，其实合并操作是将节点7所在树的根节点指向节点3所在树的根节点，也就是节点2。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;以上就是真正并查集实现的思路，和上面<strong>Quick Find</strong>实现的存储发生了变化，实际上也是很简单的。通过观察，我们发现针对每一个节点，只有一个指针，只会指向另一个元素，对于这个指针的存储，我们依然可以使用数组的方式来存储。这个数组，我们可以叫作<code>parent</code>,<code>parent[i]</code>表示的就是第i个元素所在的节点指向了哪个元素。<br>&ensp;&ensp;&ensp;&ensp;在初始化的时候，每一个节点都没有和任何一个节点合并，都指向了自己，也就是<code>parent[i]</code>都等于<code>i</code>。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/parent%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81.png" width="80%" height="80%">  </p>
+<p>&ensp;&ensp;&ensp;&ensp;当要执行<code>union(4,3)</code>时，将节点4指向节点3，对应parent数组，就是将<code>parent[4]</code>设置为<code>parent[3]</code>的值。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/parent-union4-3.png" width="80%" height="80%">    </p>
+<p>&ensp;&ensp;&ensp;&ensp;要执行<code>union(3,8)</code>，就是将节点3所在的树指向节点8，相应的<code>parent[3]</code>设置为8；执行<code>union(6,5)</code>,就是将节点6指向节点5，<code>parent[6]</code>设置为5。</p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union3-8-union6-5.png" width="80%" height="80%">   </p>
+<p>&ensp;&ensp;&ensp;&ensp;执行<code>union(9,4)</code>，就是将节点9指向节点4所在这棵树的根节点，这里涉及到了一个查询操作，查询节点4所在的根节点，我们先看节点4的父节点是3，不是4本身，继续查找节点3的父节点为节点8，也不是节点3本身，说明还不是这棵树的根节点，我们继续往下找，看节点8的父节点是8，与节点8本身相等，说明这是个根节点，此时我们便找到了节点4所在这棵树的根节点，也就是节点8。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/parent-union9-4.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;上图中可以看到，节点9指向了节点8，我们为什么不直接指向节点4呢？很显然，指向节点4的话就形成了一个链表，之后如果再进行查找节点9所在树的根节点时，就等同于遍历了这个链表，树的优势就体现不出来了；而指向节点8时，当查找节点9所在树的根节点时，我们向上查1次就能得到结果。所以在数组中，<code>parent[9]</code>设置成8。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;按照上面的规律，我们执行<code>union(2,1)</code>和<code>union(5,0)</code>，可以得到下图的结果。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union2-1-union-5-0.png" width="80%" height="80%">   </p>
+<p>&ensp;&ensp;&ensp;&ensp;执行<code>union(7,2)</code>和<code>union(6,2)</code>，前者很简单，无需多说，后者稍微复杂一些，我们要找到节点6所在树的根节点，让它指向节点2所在树的根节点，也就是节点0指向节点1。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union-7-2-union-6-2.png" width="80%" height="80%">    </p>
+<p>&ensp;&ensp;&ensp;&ensp;以上的操作，是并查集通常的实现。通过分析，我们知道<strong>这种<code>union</code>操作的时间复杂度是O(h)</strong>,h表示的是union的两个元素所在树深度的大小，通常这个深度的大小比元素的个数要小的多，所以这个<code>union</code>的过程相对来说会快一些；不过相应的代价就是查询操作，如果我们想知道节点5和节点4是否相连，我们要吵到节点5和节点4对应的根节点，比较两个根节点是否相等，这里节点5的根节点是1，节点4的根节点是8，1和8不相等，所以节点5和节点4不是相连的，<strong>这一查找的过程时间复杂度也是O(h)</strong>。我们通过牺牲了查询操作的性能提升了合并操作的性能，不过通常情况下，树的深度是远远小于元素的总数的，所以我们让查询和合并都是树的高度这个时间复杂度，在大多数情况下，性能是可以接受的。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;知道了查找和合并的思路，下面我们来看看代码实现。  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并查集实现 - v2</span></span><br><span class="line"><span class="comment"> * parent 0 1 2 3 4 5 6 7 8 9</span></span><br><span class="line"><span class="comment"> *       ---------------------</span></span><br><span class="line"><span class="comment"> *        1 1 0 3 4 5 6 6 5 9</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Operate            |  时间复杂度</span></span><br><span class="line"><span class="comment"> * unionElement(p,q) --&gt; O(h) h: height of tree</span></span><br><span class="line"><span class="comment"> * isConnected(p,q)  --&gt; O(h) h: height of tree</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> renxiaoya</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-12-06</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFind2</span> <span class="keyword">implements</span> <span class="title">UF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] parent;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UnionFind2</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">        parent = <span class="keyword">new</span> <span class="keyword">int</span>[size];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            parent[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> parent.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isConnected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> find(p) == find(q);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionElement</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">        <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (pRoot == qRoot) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        parent[pRoot] = qRoot;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查找元素p对应的集合编号</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p 元素p</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> p对应的元素编号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (p &lt; <span class="number">0</span> || p &gt;= parent.length) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"p is out of bound."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//不断地查找根节点</span></span><br><span class="line">        <span class="keyword">while</span> (p != parent[p]) &#123;</span><br><span class="line">            p = parent[p];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="三、可以再优化吗"><a href="#三、可以再优化吗" class="headerlink" title="三、可以再优化吗"></a>三、可以再优化吗</h1><p>&ensp;&ensp;&ensp;&ensp;上面我们实现了两种并查集，这两种实现的性能如何呢？我们来测试一下。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;对于size=10000，进行10000次合并和10000次查询操作。具体测试代码这里就不贴出来了，来看结果吧。对比之下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UnionFind1 : 0.05409653s</span><br><span class="line">UnionFind2 : 0.035575485s</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;上面结果差异并不明显，我们增加size，对于size=100000，进行10000次合并和10000次查询，结果变成了如下的情况：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UnionFind1 : 0.269145621s</span><br><span class="line">UnionFind2 : 0.003194141s</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;如果我们把操作次数也设为100000，又会变成什么样呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UnionFind1 : 5.205210688s</span><br><span class="line">UnionFind2 : 10.711065036s</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;对于v1版本的并查集，我们就是使用数组的顺序遍历，是对一片连续的空间进行了一次循环的操作，这样的操作，jvm有很好的优化，所以运行速度会非常快。<br>&ensp;&ensp;&ensp;&ensp;而对于v2版本的并查集来说，这个查询的过程其实是一个不断索引的过程，它不是一个顺次访问一片连续空间的过程，要在不同的地址空间进行跳转，因此速度会相对慢一些；再者，v2的并查集，find和union的复杂度都是O(h),我们增大了操作数，意味着在union的过程中，将更多的元素都组织在了一个集合中，这棵树就变得非常庞大，深度也有可能会非常高，导致我们进行这100000次操作的时候，<code>isConnected</code>消耗的时间也会比较多。所以这次的测试结果，v2版本的效率显得更慢一些。</p>
+<h2 id="针对size的优化"><a href="#针对size的优化" class="headerlink" title="针对size的优化"></a>针对size的优化</h2><p>&ensp;&ensp;&ensp;&ensp;其实对于v2版本的并查集，我们有很大的优化空间，我们回忆一下，在进行union操作的时候，是没有考虑树的特点就进行合并指向的，我们来看下面的过程。<br>&ensp;&ensp;&ensp;&ensp;依次进行<code>union(0,1)</code>,<code>union(0,2)</code>,<code>union(0,3)</code>操作，我们的并查集变成了这个样子。 </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union%E9%93%BE%E8%A1%A8.png" width="80%" height="80%">  </p>
+<p>&ensp;&ensp;&ensp;&ensp;很明显，这样已经形成了一个链表，当我们继续进行<code>union(0,n)</code>，最终我们的并查集实际上就是一条长长的链表了。这种情况我们如何进行优化呢？  </p>
+<p>&ensp;&ensp;&ensp;&ensp;一个简单的思路，我们考虑当前节点所在的这棵树的节点多少，将节点少的这棵树合并到节点多的树上，就可以有效的降低树的高度。比如上述例子，我们进行<code>union(0,3)</code>时，比较一下节点0所在树的size（3）和节点3所在树的size（1），将size小的向size大的树合并，即将节点3指向节点2。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/union0-3size%E4%BC%98%E5%8C%96.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;这样我们可以有效地降低树的高度。代码改造如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并查集实现 - v3</span></span><br><span class="line"><span class="comment"> * 与v2相比，优化了size，unionElement时，将节点数少的树指向节点数多的树</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> renxiaoya</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-12-06</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFind3</span> <span class="keyword">implements</span> <span class="title">UF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] parent;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * sz[i]表示以i为根的集合中元素的个数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] sz;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UnionFind3</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">        parent = <span class="keyword">new</span> <span class="keyword">int</span>[size];</span><br><span class="line">        sz = <span class="keyword">new</span> <span class="keyword">int</span>[size];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            parent[i] = i;</span><br><span class="line">            sz[i] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> parent.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isConnected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> find(p) == find(q);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionElement</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">        <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (pRoot == qRoot) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 若pRoot所在元素比qRoot所在元素少，将pRoot指向qRoot，并维护sz</span></span><br><span class="line">        <span class="keyword">if</span> (sz[pRoot] &lt; sz[qRoot]) &#123;</span><br><span class="line">            parent[pRoot] = qRoot;</span><br><span class="line">            sz[qRoot] += sz[pRoot];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 否则将qRoot指向pRoot</span></span><br><span class="line">            parent[qRoot] = pRoot;</span><br><span class="line">            sz[pRoot] += sz[qRoot];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查找元素p对应的集合编号</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p 元素p</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> p对应的元素编号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (p &lt; <span class="number">0</span> || p &gt;= parent.length) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"p is out of bound."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (p != parent[p]) &#123;</span><br><span class="line">            p = parent[p];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;现在我们再来看看在size=100000，操作数也为100000的测试用例中，并查集的表现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">UnionFind1 : 5.266835514s</span><br><span class="line">UnionFind2 : 11.177287476s</span><br><span class="line">UnionFind3 : 0.021229747s</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;优化的效果是非常明显的，v3版本的并查集仅用了0.02秒就完成了操作。  </p>
+<h2 id="基于rank的优化"><a href="#基于rank的优化" class="headerlink" title="基于rank的优化"></a>基于rank的优化</h2><p>&ensp;&ensp;&ensp;&ensp;上面基于size的优化，我们考虑了树所在的节点个数多少来降低树的高度，那何不更直接的来比较树的高度呢？<br>假设有如下的并查集，需要进行<code>union(4,2)</code>操作。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/rank%E5%88%9D%E5%A7%8B.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;若按照size优化的思路，我们会将节点8指向节点7，因为节点4所在树的size比节点2所在树的size小，如下图所示：  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/rank-size.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;这样树的高度是4。如果我们直接来比较树的高度来进行合并呢？将高度低的向高度高的树合并，如下图所示：  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/rank-union.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;这样树的高度是3，比基于size的优化得到的树的高度更低。<br>&ensp;&ensp;&ensp;&ensp;我们来看看代码如何实现，其实与size优化的代码很像，只是用一个int数组代表了以i为根的树的高度，合并的时候判断高度，将高度低的向高度高的树合并，并在合适的时候维护rank的值即可。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并查集实现 - v4</span></span><br><span class="line"><span class="comment"> * 针对rank优化，unionElement时，深度低的树指向深度高的树</span></span><br><span class="line"><span class="comment"> * 这里是rank，排名、序的意思，不是绝对的高度</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> renxiaoya</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-12-06</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFind4</span> <span class="keyword">implements</span> <span class="title">UF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] parent;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * rank[i]表示以i为根的集合中元素的高度rank</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] rank;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UnionFind4</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">        parent = <span class="keyword">new</span> <span class="keyword">int</span>[size];</span><br><span class="line">        rank = <span class="keyword">new</span> <span class="keyword">int</span>[size];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            parent[i] = i;</span><br><span class="line">            rank[i] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> parent.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isConnected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> find(p) == find(q);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionElement</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">        <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (pRoot == qRoot) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 根据两个元素所在的树的rank不同判断合并的方向</span></span><br><span class="line">        <span class="comment">// 将rank低的集合指向rank高的集合</span></span><br><span class="line">        <span class="keyword">if</span> (rank[pRoot] &lt; rank[qRoot]) &#123;</span><br><span class="line">            parent[pRoot] = qRoot;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (rank[qRoot] &lt; rank[pRoot]) &#123;</span><br><span class="line">            parent[qRoot] = pRoot;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// rank[qRoot] == rank[pRoot]</span></span><br><span class="line">            parent[qRoot] = pRoot;</span><br><span class="line">            rank[pRoot] += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查找元素p对应的集合编号</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> p 元素p</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> p对应的元素编号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (p &lt; <span class="number">0</span> || p &gt;= parent.length) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"p is out of bound."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (p != parent[p]) &#123;</span><br><span class="line">            p = parent[p];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;我们来测试一下基于rank的优化结果吧。由于前两种并查集实现的效率很低，这里就不进行测试了，我们来比较v3和v4的效率。<br>&ensp;&ensp;&ensp;&ensp;我们增大数据量，拿size=10000000，操作数也为10000000来进行测试，结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UnionFind3 : 4.168454361s</span><br><span class="line">UnionFind4 : 4.285047797s</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;可以看到实际上基于size和基于rank的优化的结果是差不多的，只不过基于rank的优化在思路上更加顺一些，所以通常实现的并查集也使用基于rank的优化方案。</p>
+<h2 id="路径压缩"><a href="#路径压缩" class="headerlink" title="路径压缩"></a>路径压缩</h2><p>&ensp;&ensp;&ensp;&ensp;有如下图的情况，这三种都可以表示并查集中相连的一些节点。我们执行<code>isConnected</code>来查询任意两个节点，都可以得到相同的结果，但是很显然，这些树的深度不同，对应的效率也是区别的。比如最左侧的树，高度达到了5，那么在进行<code>find(4)</code>的时候需要花费的时间就会比较长；而下面的这棵树，高度只有2，那么进行<code>find(4)</code>的操作速度就会很快。<br>&ensp;&ensp;&ensp;&ensp;在我们上面实现的并查集中，进行<code>union</code>的过程，免不了会使树的高度越来越高，路径压缩就是可以将一棵树可以压缩成比较矮的树  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9.png" width="80%" height="80%"> </p>
+<p>&ensp;&ensp;&ensp;&ensp;我们在进行<code>find</code>操作的时候，会依次向上查询根节点，如果在向上查询的过程中，我们同时进行路径压缩，是否可以降低树的高度呢？<br>&ensp;&ensp;&ensp;&ensp;下图中的并查集，我们进行<code>find(4)</code>操作。<br><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%8E%8B%E7%BC%A9%E5%88%9D%E5%A7%8B.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;如果当前节点不是根节点，那么我们执行<code>parent[i] = parent[parent[i]]</code>操作，即将当前节点的父节点，指向父节点的父节点，文字描述比较绕，看图就比较清晰了。<br>&ensp;&ensp;&ensp;&ensp;节点4不是根节点，将节点4的父节点指向其父节点也就是节点3的父节点–节点2。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%8E%8B%E7%BC%A9-1.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;节点2不是根节点，将节点2的父节点指向其父节点也就是节点1的父节点–节点0。  </p>
+<p><img src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/data_structure/unionFind/%E5%8E%8B%E7%BC%A9-2.png" width="80%" height="80%"><br>&ensp;&ensp;&ensp;&ensp;经过上述的操作，就将高度为5的树压缩成了高度为3，完成了一次路径压缩。<br>&ensp;&ensp;&ensp;&ensp;代码也是很简单的，在基于rank优化的代码中，我们改造<code>find</code>方法,判断节点p是否是根节点，不是的话就执行<code>parent[i] = parent[parent[i]]</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (p &lt; <span class="number">0</span> || p &gt;= parent.length) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"p is out of bound."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (p != parent[p]) &#123;</span><br><span class="line">        parent[p] = parent[parent[p]];</span><br><span class="line">        p = parent[p];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;我们用同样的测试用例再来看看我们路径压缩的优化效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">UnionFind3 : 4.289546148s</span><br><span class="line">UnionFind4 : 4.266191791s</span><br><span class="line">UnionFind5 : 3.837546687s</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>&ensp;&ensp;&ensp;&ensp;我们进行路径压缩的过程中，其实我们树的高度是降低的，但是并没有去维护rank数组的值，其实这是合理的，这也是这个数组取名rank，而不是height的原因，它表示的其实是一个排名，当我们进行路径压缩的时候，这个rank就不是严格意义上的树的高度了，它仅代表了树的一个排名。同一棵树不同节点对应的rank值可能是不同的，但是整体上的排名是一定的，这个排名依然可以用作union操作判断的依据。这里不做rank的维护，也是出于对性能的考虑，不维护的情况下已经可以胜任判断排名的依据，就无需费时去管理每一个节点的rank值使同一棵树的节点rank保持一致。  </p>
+<p>&ensp;&ensp;&ensp;&ensp;以上，我们一步步优化，实现了5个版本的并查集，相信还有不同思路的优化实现，比如路径压缩有很多种方法，我们只实现了一种，还可以使用递归来实现等等。<br>&ensp;&ensp;&ensp;&ensp;到此为止，并查集的内容就介绍完了，记录下学习的历程，相信对自己也是很大的提高。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+            <a href="/tags/树/" rel="tag"># 树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/16/简单聊聊Puppet Manager的实现/" rel="next" title="简单聊聊Puppet Manager的实现">
+                <i class="fa fa-chevron-left"></i> 简单聊聊Puppet Manager的实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTk0Ny8xNjQ3NA=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://hexo-rxy.oss-cn-beijing.aliyuncs.com/settings/%E5%A4%B4%E5%83%8F.jpg" alt="Xiaoya Ren">
+            
+              <p class="site-author-name" itemprop="name">Xiaoya Ren</p>
+              <p class="site-description motion-element" itemprop="description">Java后端工程师，曾就职于知乎，现就职于水滴</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/redmaple1" target="_blank" title="GitHub"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、什么是并查集"><span class="nav-number">1.</span> <span class="nav-text">一、什么是并查集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、并查集的实现"><span class="nav-number">2.</span> <span class="nav-text">二、并查集的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Find"><span class="nav-number">2.1.</span> <span class="nav-text">Quick Find</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Union"><span class="nav-number">2.2.</span> <span class="nav-text">Quick Union</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、可以再优化吗"><span class="nav-number">3.</span> <span class="nav-text">三、可以再优化吗</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#针对size的优化"><span class="nav-number">3.1.</span> <span class="nav-text">针对size的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于rank的优化"><span class="nav-number">3.2.</span> <span class="nav-text">基于rank的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路径压缩"><span class="nav-number">3.3.</span> <span class="nav-text">路径压缩</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoya Ren</span>
+
+  
+
+  
+</div>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  <span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+    <script type="text/javascript">
+      window.livereOptions = {
+        refer: '2020/12/07/不一样的tree-并查集/'
+      };
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
